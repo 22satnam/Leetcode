@@ -1,27 +1,46 @@
 class Solution {
 public:
-    bool validColouring(vector<vector<int>>& gr, vector<int>& colour, int node, int col){
-        if(colour[node] != 0)
-            return (colour[node] == col);
-
-        colour[node] = col;
-        for(int ne : gr[node]){
-            if(!validColouring(gr, colour, ne, -col))
+    bool dfs(vector<vector<int>>& graph, vector<int>&set,int node)
+    {
+        for(auto it:graph[node])
+        {
+            if(set[it]==-1)
+            {
+                set[it]=!set[node];
+                if(!dfs(graph,set,it))
                 return false;
+            }
+            else if(set[it]==set[node])
+            {
+                return false;
+            }
+            
         }
-
         return true;
     }
+    bool isBipartite(vector<vector<int>>& graph) {
+     int m=graph.size();
+     int n=graph[0].size();
+     //set a=0, setb=1
+     bool ans=true;
+     vector<int>set(m,-1);   
+     for(int i=0;i<m;i++)
+     {
+         if(set[i]!=-1)
+         {
+             continue;
 
-    bool isBipartite(vector<vector<int>>& gr) {
-        int n = gr.size();
-        vector<int> colour(n, 0);
-
-        for(int node = 0; node < n; node++){
-            if(colour[node]==0 && !validColouring(gr, colour, node, 1))
+         }
+         else
+         {
+             set[i]=0;
+            if(!dfs(graph,set,i))
+            {
                 return false;
-        }
+            }
 
-        return true;
+         }
+     }
+     return ans;
     }
 };
